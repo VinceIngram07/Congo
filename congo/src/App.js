@@ -85,6 +85,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import Cart from './components/Cart';
 import Categories from './components/Categories';
+import Film from "./components/Film";
 
 export default function App() {
   return (
@@ -93,6 +94,7 @@ export default function App() {
         <Route index element={<Home/>} />
         <Route path= "/cart" element={<Cart/>} />
         <Route path = "/categories" element = {<Categories/>} />
+        <Route path = "/films" element = {<Film/>} />
       </Routes>
     </BrowserRouter>
   );

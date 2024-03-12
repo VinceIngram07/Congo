@@ -13,6 +13,9 @@ const Home = () => {
       <Link to="/categories">
         <button>View Categories</button>
       </Link>
+      <Link to="/films">
+        <button>View All Films</button>
+      </Link>
     </div>
   );
 };
