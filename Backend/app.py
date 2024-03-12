@@ -31,21 +31,6 @@ def film():
     cur.close()
     return jsonify(data)
 
-# @app.route('/films', methods=['GET'])
-# def get_films_by_category():
-#     try:
-#         category = request.args.get('category', default='', type=str)
-#         if not category:
-#             return jsonify(error='Category parameter is missing'), 400
-
-#         cur = mysql.connection.cursor()
-#         cur.execute(f'SELECT * FROM film WHERE category = "{category}";')
-#         films = cur.fetchall()
-#         cur.close()
-#         return jsonify(films)
-#     except Exception as e:
-#         return jsonify(error=str(e)), 500
-
 @app.route('/films', methods=['GET'])
 def get_films_by_category():
     try:
