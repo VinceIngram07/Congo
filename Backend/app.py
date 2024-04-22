@@ -4,7 +4,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
-
+# If the json isnt being populated try puting 2 databases
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'VinD1120'
@@ -40,12 +40,15 @@ def get_films_by_category():
         cur = mysql.connection.cursor()
         cur.execute('SELECT category_id FROM category WHERE type_ = %s;', (category_name,))
         category_id = cur.fetchone()[0]
-        cur.close()
 
         # Fetch films using the film_category junction table
-        cur = mysql.connection.cursor()
         cur.execute('SELECT f.* FROM film f JOIN film_category fc ON f.film_id = fc.film_id WHERE fc.category_id = %s;', (category_id,))
         films = cur.fetchall()
+
+        # Convert tuples to dictionaries
+        column_names = [desc[0] for desc in cur.description]
+        films = [dict(zip(column_names, row)) for row in films]
+
         cur.close()
 
         return jsonify(films)

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { BeatLoader } from "react-spinners";
+// import category1Image from './IMG/Lajonard-Movie-Folder-Comedy.256.png';
 
 const Film = () => {
   const [categories, setCategories] = useState([]);
@@ -7,36 +9,45 @@ const Film = () => {
   const [films, setFilms] = useState([]);
   const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
+  const [selectedFilm, setSelectedFilm] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filmsPerPage] = useState(6);
+  const [loading, setLoading] = useState(false);
+  
+  
+  // Calculate the films for the current page
+  const indexOfLastFilm = currentPage * filmsPerPage;
+  const indexOfFirstFilm = indexOfLastFilm - filmsPerPage;
+  const currentFilms = films.slice(indexOfFirstFilm, indexOfLastFilm);
+  
+  // Change page
+  const paginate = pageNumber => setCurrentPage(pageNumber);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:5000/categories');
         setCategories(response.data);
-
+  
         // Fetch films for the default category
         if (response.data.length > 0) {
           const defaultCategory = response.data[0][1];
-          setSelectedCategory(defaultCategory);
-          const filmsResponse = await axios.get(`http://localhost:5000/films?category=${defaultCategory}`);
-          setFilms(filmsResponse.data);
+          handleCategoryChange(defaultCategory);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
+  
     fetchData();
   }, []);
 
   const handleCategoryChange = async (category) => {
-    setSelectedCategory(category);
-    try {
-      const response = await axios.get(`http://localhost:5000/films?category=${category}`);
-      setFilms(response.data);
-    } catch (error) {
-      console.error('Error fetching films:', error);
-    }
+    setLoading(true);
+    const response = await fetch(`http://localhost:5000/films?category=${category}`);
+    const data = await response.json();
+    setFilms(data);
+    setLoading(false);
   };
 
   const addToCart = (film) => {
@@ -53,62 +64,73 @@ const Film = () => {
       <button onClick={() => setShowCart(!showCart)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-4">
         {showCart ? 'View Films' : 'View Shopping Cart'}
       </button>
-
+  
       <h1 className="text-3xl mb-4">Films</h1>
-
-      {/* Dropdown menu for categories */}
-      <label htmlFor="category" className="mr-2">Select Category:</label>
-      <select
-        id="category"
-        name="category"
-        value={selectedCategory}
-        onChange={(e) => handleCategoryChange(e.target.value)}
-        className="p-2 border border-gray-400 rounded"
-      >
+  
+      {/* Grid for categories */}
+      <div className="grid grid-cols-3 gap-4">
         {categories.map((category) => (
-          <option key={category[0]} value={category[1]}>
+          <div
+            key={category[0]}
+            onClick={() => handleCategoryChange(category[1])}
+            className="border border-gray-300 bg-blue-500 text-white hover:bg-blue-700 transition rounded p-4 cursor-pointer"
+          >
             {category[1]}
-          </option>
-        ))}
-      </select>
-
-      {/* Display films based on the selected category */}
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        {showCart ? (
-          <div className="p-4 border border-gray-300 rounded">
-            <h2 className="text-xl font-semibold mb-2">Shopping Cart</h2>
-            <ul className="mt-4">
-              {cart.map((cartItem) => (
-                <li key={cartItem[0]} className="flex items-center justify-between border border-gray-300 rounded p-2 mb-2">
-                  <div>
-                    <span className="font-semibold">{cartItem[1]}</span> - {cartItem[2]}
-                  </div>
-                  <button onClick={() => removeFromCart(cartItem[0])} className="ml-2 bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded">
-                    Remove
-                  </button>
-                </li>
-              ))}
-            </ul>
           </div>
-        ) : (
-          films.map((film) => (
-            <div key={film[0]} className="border border-gray-300 rounded p-4">
-              <div className="text-xl font-semibold mb-2">{film[1]}</div>
-              <div className="text-sm text-gray-600">{film[2]}</div>
-              <button onClick={() => addToCart(film)} className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+        ))}
+      </div>
+  
+      {/* Display loading spinner or films based on the loading state */}
+      {loading ? (
+        <div className="flex justify-center items-center">
+          <BeatLoader color={"#123abc"} loading={loading} size={15} />
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-4 mt-8">
+          {currentFilms.map((film) => (
+            <div key={film.film_id} className="border border-gray-300 rounded p-4">
+              <h2 className="text-xl font-bold">{film.title}</h2>
+              <p>{film.description}</p>
+              {/* Add more film details here */}
+              <button 
+                onClick={() => setSelectedFilm(film)} 
+                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              >
+                View Film
+              </button>
+              <button 
+                onClick={() => addToCart(film)} 
+                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2"
+              >
                 Add to Cart
               </button>
             </div>
-          ))
-        )}
+          ))}
+        </div>
+      )}
+  
+      {/* Pagination */}
+      <div className="mt-4">
+        {[...Array(Math.ceil(films.length / filmsPerPage))].map((e, i) => (
+          <button 
+            key={i} 
+            onClick={() => paginate(i + 1)} 
+            className={`mx-2 py-2 px-4 rounded ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-white text-black'} hover:bg-blue-700 transition`}
+          >
+            {i + 1}
+          </button>
+        ))}
       </div>
-
+  
       {/* Shopping cart button at the bottom */}
-      <button onClick={() => setShowCart(!showCart)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-4">
+      <button onClick={() => setShowCart(!showCart)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-8">
         {showCart ? 'View Films' : 'View Shopping Cart'}
       </button>
     </div>
   );
+
 };
 
 export default Film;
+
+// Path: congo/src/components/Film.js
