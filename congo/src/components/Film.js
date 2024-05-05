@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { BeatLoader } from "react-spinners";
-// import category1Image from './IMG/Lajonard-Movie-Folder-Comedy.256.png';
+import './Film.css';
 
 const Film = () => {
   const [categories, setCategories] = useState([]);
@@ -13,14 +13,13 @@ const Film = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filmsPerPage] = useState(6);
   const [loading, setLoading] = useState(false);
-  
-  
-  // Calculate the films for the current page
+  const [showFilmDetails, setShowFilmDetails] = useState(false);
+  const [likedFilms, setLikedFilms] = useState([]);
+
   const indexOfLastFilm = currentPage * filmsPerPage;
   const indexOfFirstFilm = indexOfLastFilm - filmsPerPage;
   const currentFilms = films.slice(indexOfFirstFilm, indexOfLastFilm);
-  
-  // Change page
+
   const paginate = pageNumber => setCurrentPage(pageNumber);
 
   useEffect(() => {
@@ -28,8 +27,7 @@ const Film = () => {
       try {
         const response = await axios.get('http://localhost:5000/categories');
         setCategories(response.data);
-  
-        // Fetch films for the default category
+
         if (response.data.length > 0) {
           const defaultCategory = response.data[0][1];
           handleCategoryChange(defaultCategory);
@@ -38,7 +36,7 @@ const Film = () => {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     fetchData();
   }, []);
 
@@ -55,19 +53,50 @@ const Film = () => {
   };
 
   const removeFromCart = (filmId) => {
-    setCart(cart.filter(item => item[0] !== filmId));
+    setCart(cart.filter(film => film.film_id !== filmId));
+  };
+
+  const viewFilm = (film) => {
+    setSelectedFilm(film);
+    setShowFilmDetails(true);
+  };
+
+  const likeFilm = (film) => {
+    setLikedFilms([...likedFilms, film]);
+  };
+
+  const shareFilm = (film) => {
+    alert(`Sharing ${film.title}`);
+  };
+
+  const Cart = () => {
+    const buyItems = () => {
+      setCart([]);
+      alert('Purchase complete!');
+    };
+  
+    return (
+      <div className="cart">
+        <h2 className="text-2xl font-bold">Shopping Cart</h2>
+        {cart.map((film) => (
+          <div key={film.film_id} className="cart-item">
+            <h3 className="film-title">{film.title}</h3>
+            <button onClick={() => removeFromCart(film.film_id)} className="remove-button">Remove from cart</button>
+          </div>
+        ))}
+        <button onClick={buyItems} className="buy-button">Buy</button>
+      </div>
+    );
   };
 
   return (
     <div className="p-8">
-      {/* Shopping cart button on top */}
       <button onClick={() => setShowCart(!showCart)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mb-4">
         {showCart ? 'View Films' : 'View Shopping Cart'}
       </button>
-  
+
       <h1 className="text-3xl mb-4">Films</h1>
-  
-      {/* Grid for categories */}
+
       <div className="grid grid-cols-3 gap-4">
         {categories.map((category) => (
           <div
@@ -79,8 +108,7 @@ const Film = () => {
           </div>
         ))}
       </div>
-  
-      {/* Display loading spinner or films based on the loading state */}
+
       {loading ? (
         <div className="flex justify-center items-center">
           <BeatLoader color={"#123abc"} loading={loading} size={15} />
@@ -91,9 +119,8 @@ const Film = () => {
             <div key={film.film_id} className="border border-gray-300 rounded p-4">
               <h2 className="text-xl font-bold">{film.title}</h2>
               <p>{film.description}</p>
-              {/* Add more film details here */}
               <button 
-                onClick={() => setSelectedFilm(film)} 
+                onClick={() => viewFilm(film)} 
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
               >
                 View Film
@@ -104,12 +131,39 @@ const Film = () => {
               >
                 Add to Cart
               </button>
+              <button 
+                onClick={() => likeFilm(film)} 
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2"
+              >
+                Like
+              </button>
+              <button 
+                onClick={() => shareFilm(film)} 
+                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mt-2"
+              >
+                Share
+              </button>
             </div>
           ))}
         </div>
       )}
-  
-      {/* Pagination */}
+
+{showFilmDetails && selectedFilm && (
+  <div className="bg-gray-200 p-5 rounded mt-5">
+    <h2 className="text-2xl font-bold">{selectedFilm.title}</h2>
+    <p className="mt-2">{selectedFilm.description}</p>
+    <p className="mt-2">Release Year: {selectedFilm.release_year}</p>
+    <p className="mt-2">Rental Rate: {selectedFilm.rental_rate}</p>
+    <p className="mt-2">Rating: {selectedFilm.rating}</p>
+    <button 
+      onClick={() => setShowFilmDetails(false)} 
+      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2"
+    >
+      Close
+    </button>
+  </div>
+)}
+
       <div className="mt-4">
         {[...Array(Math.ceil(films.length / filmsPerPage))].map((e, i) => (
           <button 
@@ -121,16 +175,14 @@ const Film = () => {
           </button>
         ))}
       </div>
-  
-      {/* Shopping cart button at the bottom */}
+
+      {showCart && <Cart />}
+
       <button onClick={() => setShowCart(!showCart)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded mt-8">
         {showCart ? 'View Films' : 'View Shopping Cart'}
       </button>
     </div>
   );
-
 };
 
 export default Film;
-
-// Path: congo/src/components/Film.js
