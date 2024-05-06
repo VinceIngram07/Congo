@@ -9,8 +9,8 @@ In today's digital age, effective management of video rental services remains cr
 ## Design
 
 The design process involved creating an Entity-Relationship (ER) diagram, a Unified Modeling Language (UML) class diagram, and a database schema based on the requirements provided. The ER diagram depicts the entities and their relationships, while the UML class diagram represents the tables and their associations. The database schema is structured according to the defined tables, their attributes, and foreign key constraints.
-![ER Diagram](images/EER diagram.png)
-![UML Diagram](images/UML class diagram.png)
+![ER Diagram](images/EERdiagram.png)
+![UML Diagram](images/UMLclassdiagram.png)
 ![RI Diagram](images/ReferentialIntegrityDiagram.png)
 
 
