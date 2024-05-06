@@ -27,7 +27,48 @@ The project's functionality revolves around managing various aspects of a video 
 ## User Manual
 
 A user manual, including a video description demonstrating how users can interact with the system, is available in the repository.
+[Link to video](CongoFilmVideo.mp4)
 
+## Running the Application
+
+### Backend Dependencies
+
+- Python 3.x
+- Flask
+- Flask-MySQLdb
+- Flask-CORS
+
+### Frontend Dependencies
+
+- Node.js
+- React
+- axios
+
+### Backend Setup
+
+1. Install Python 3.x from [python.org](https://www.python.org/).
+2. Install Flask and Flask extensions using pip:
+   ```bash
+   pip install Flask Flask-MySQLdb flask-cors
+3. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+4. Start the server:
+   ```bash
+   python backend.py
+
+## Frontend Setup
+
+1. Install Node.js from [nodejs.org](https://nodejs.org/).
+2. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+3. Install dependencies using npm:
+   ```bash
+    npm install
+4. Start the development server:
+   ```bash
+   npm start
 ## Conclusion
 
 In conclusion, this repository serves as a comprehensive resource for understanding the design and implementation of a database schema for Congo, a fictional video rental company. By following established database design principles and methodologies, we have created a robust system capable of managing various aspects of the business efficiently. This project lays the foundation for further development and enhancement of video rental management systems.
