@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const Home = () => {
+const Categories = () => {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/category');
+        const response = await axios.get('http://localhost:5000/categories');
         setCategories(response.data);
       } catch (error) {
         console.error('Error fetching categories:', error);
@@ -31,4 +31,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Categories;

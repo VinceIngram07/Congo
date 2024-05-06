@@ -1,0 +1,49 @@
+/* Film.css */
+.film-card {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+  }
+  
+  .film-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .film-description {
+    font-size: 14px;
+    color: #666;
+  }
+  .cart {
+    background-color: #f8f8f8;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  .cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  .film-title {
+    flex-grow: 1;
+  }
+  
+  .remove-button {
+    background-color: #ff0000;
+    color: #ffffff;
+    padding: 5px 10px;
+    border-radius: 5px;
+  }
+  
+  .buy-button {
+    background-color: #00ff00;
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+  }

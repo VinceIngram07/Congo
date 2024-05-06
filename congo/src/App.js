@@ -83,16 +83,19 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
-import Cart from './components/Cart';
+// import Cart from './components/Cart';
 import Categories from './components/Categories';
+import Film from "./components/Film";
+// import ShoppingCart from './components/ShoppingCart';
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route index element={<Home/>} />
-        <Route path= "/cart" element={<Cart/>} />
+        {/* <Route path = "/cart" element={<ShoppingCart/>} /> */}
         <Route path = "/categories" element = {<Categories/>} />
+        <Route path = "/films" element = {<Film/>} />
       </Routes>
     </BrowserRouter>
   );
